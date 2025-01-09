@@ -32,7 +32,14 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddAuthentication();
 
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<DataContext>();
+/*builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<DataContext>()
+    .AddSignInManager()
+    .AddRoleManager<RoleManager<IdentityRole>>()
+    .AddDefaultTokenProviders();*/
 
 var app = builder.Build();
 
