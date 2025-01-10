@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+  olmag.manufacture2:
+    image: ${DOCKER_REGISTRY-}olmagmanufacture2
+    build:
+      context: .
+      dockerfile: OlMag.Manufacture2/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTPS_PORTS=8351
+    ports:
+      - 8351:8351
+    networks:
+      - identity
+      
+  olmagdb:
+    image: postgres:13-alpine
+    restart: unless-stopped
+    container_name: olmagdb
+    environment:
+      POSTGRES_PASSWORD: 123asdASD
+      POSTGRES_DB: olmag.manufacture
+      POSTGRES_USER: olmag_db
+    command: -c shared_buffers=128MB -c max_connections=200 -c max_prepared_transactions=200 -c effective_cache_size=384GB -c maintenance_work_mem=2GB -c checkpoint_completion_target=0.7 -c wal_buffers=16MB -c default_statistics_target=100 -c random_page_cost=1.1 -c effective_io_concurrency=200 -c work_mem=335544kB -c min_wal_size=1GB -c max_wal_size=4GB
+    ports:
+      - 4332:5432
+    volumes:
+      - olmagdb:/var/lib/postgresql/data
+    networks:
+      - identity
+
+volumes:
+  olmagdb:
+  pgadmin:
+      
+networks:
+  identity:
+    name: identity

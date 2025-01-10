@@ -9,8 +9,7 @@ namespace OlMag.Manufacture2.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Admin")]
-    [ApiExplorerSettings(GroupName = "user-managment")]
+    [Authorize(Roles = "UserAdministrator")]
     public class UserManagementController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -26,44 +25,42 @@ namespace OlMag.Manufacture2.Controllers
             _roleManager = roleManager;
         }
 
-        [HttpPost("roles/create")]
-        public async Task<IActionResult> CreateRole(RoleRequest request)
+        [HttpGet("healthcheck")]
+        [AllowAnonymous]
+        public async Task<IActionResult> HealthCheck()
         {
-            var roleName = request.RoleName;
-            if (string.IsNullOrWhiteSpace(roleName)) return BadRequest("Role name is empty");
-            if (await _roleManager.RoleExistsAsync(roleName)) return Conflict("The role has already been created");
+            return Ok("success");
+        }
 
-            await _roleManager.CreateAsync(new IdentityRole
-            {
-                Name = roleName,
-                NormalizedName = roleName.ToUpper()
-            });
-            return Ok();
+        [HttpGet("healthcheckauth")]
+        public async Task<IActionResult> HealthCheckAuth()
+        {
+            return Ok("success");
         }
 
         [HttpPost("users/{userId:guid}/addRole")]
-        public async Task<IActionResult> AddUserRole(Guid userId, RoleRequest request)
+        public async Task<IActionResult> AddUserRole(string userId, RoleRequest request)
         {
             var roleName = request.RoleName;
             if (string.IsNullOrWhiteSpace(roleName)) return BadRequest("Role name is empty");
-            if (!await _roleManager.RoleExistsAsync(roleName)) return BadRequest($"Role {request.RoleName} not found");
+            if (!await _roleManager.RoleExistsAsync(roleName).ConfigureAwait(false)) return BadRequest($"Role {request.RoleName} not found");
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null) return BadRequest($"User {userId} not found");
 
-            await _userManager.AddToRoleAsync(user, roleName);
+            await _userManager.AddToRoleAsync(user, roleName).ConfigureAwait(false);
             return Ok();
         }
 
         [HttpDelete("users/{userId:guid}/deleteRole")]
-        public async Task<IActionResult> DeleteUserRole(Guid userId, RoleRequest request)
+        public async Task<IActionResult> DeleteUserRole(string userId, RoleRequest request)
         {
             var roleName = request.RoleName;
             if (string.IsNullOrWhiteSpace(roleName)) return BadRequest("Role name is empty");
-            if (!await _roleManager.RoleExistsAsync(roleName)) return BadRequest($"Role {request.RoleName} not found");
+            if (!await _roleManager.RoleExistsAsync(roleName).ConfigureAwait(false)) return BadRequest($"Role {request.RoleName} not found");
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null) return BadRequest($"User {userId} not found");
 
-            await _userManager.RemoveFromRoleAsync(user, roleName);
+            await _userManager.RemoveFromRoleAsync(user, roleName).ConfigureAwait(false);
             return Ok();
         }
 
@@ -71,16 +68,17 @@ namespace OlMag.Manufacture2.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             var users = (await Task.WhenAll(
-                _userManager.Users.ToList().Select(GetUserInfo)))
+                _userManager.Users.ToList().Select(GetUserInfo)).ConfigureAwait(false))
                 .Where(result => result != null).ToList();
             return Ok(users);
         }
 
         private async Task<UserWithRolesResponse> GetUserInfo(IdentityUser user)
         {
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
             return new UserWithRolesResponse
             {
+                Id = user.Id,
                 Name = user.UserName,
                 Email = user.Email,
                 Roles = roles.ToArray()

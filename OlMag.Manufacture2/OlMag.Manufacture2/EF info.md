@@ -1,6 +1,10 @@
 ﻿В командной строке на уровне солюшена выполнить команды: 
 // dotnet tool install --global dotnet-ef
 
-dotnet ef migrations add initial -s OlMag.Manufacture.Api -p OlMag.Manufacture.DataAccess
+1. dotnet ef migrations add initial
 
-dotnet ef database update -s OlMag.Manufacture.Api -p OlMag.Manufacture.DataAccess
+2. временно сменить в строке соединения на "Server=localhost..."
+
+3. dotnet ef database update
+
+4. вернуть строку соединения на "Server=host.docker.internal..."

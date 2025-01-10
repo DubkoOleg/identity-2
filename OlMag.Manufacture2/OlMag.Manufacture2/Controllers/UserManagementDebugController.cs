@@ -45,6 +45,22 @@ namespace OlMag.Manufacture2.Controllers
             return Ok("success");
         }
 
+        [HttpGet("users/current")]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+            var userInfo = new UserWithRolesResponse
+            {
+                Id = user.Id,
+                Name = user.UserName,
+                Email = user.Email,
+                Roles = roles.ToArray()
+            };
+            return Ok(userInfo);
+        }
+
         [HttpPost("role/create")]
         [Authorize]
         public async Task<IActionResult> CreateRole(CreateRoleRequest request)
@@ -101,27 +117,6 @@ namespace OlMag.Manufacture2.Controllers
             if (user == null) return BadRequest($"User with email {userEmail} not found");
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             return Ok(code);
-        }
-
-        [HttpGet("users/all")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            var users = (await Task.WhenAll(
-                _userManager.Users.ToList().Select(GetUserInfo)))
-                .Where(result => result != null).ToList();
-            return Ok(users);
-        }
-
-        private async Task<UserWithRolesResponse> GetUserInfo(IdentityUser user)
-        {
-            var roles = await _userManager.GetRolesAsync(user);
-            return new UserWithRolesResponse
-            {
-                Name = user.UserName,
-                Email = user.Email,
-                Roles = roles.ToArray()
-            };
         }
     }
 

@@ -4,6 +4,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace OlMag.Manufacture2.Migrations
 {
     /// <inheritdoc />
@@ -155,6 +157,31 @@ namespace OlMag.Manufacture2.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "1", null, "Admin", "ADMIN" },
+                    { "10", null, "MasterOfMechanicalProcessing", "MASTEROFMECHANICALPROCESSING" },
+                    { "11", null, "MasterOfLaser", "MASTEROFLASER" },
+                    { "12", null, "TeamCnc", "TEAMCNC" },
+                    { "13", null, "TeamOfMechanicalProcessing", "TEAMOFMECHANICALPROCESSING" },
+                    { "14", null, "TeamOfLaser", "TEAMOFLASER" },
+                    { "15", null, "Supplier", "SUPPLIER" },
+                    { "16", null, "TeamAssembly", "TEAMASSEMBLY" },
+                    { "17", null, "ControlDepartment", "CONTROLDEPARTMENT" },
+                    { "18", null, "Packer", "PACKER" },
+                    { "2", null, "UserAdministrator", "USERADMINISTRATOR" },
+                    { "3", null, "SalesManager", "SALESMANAGER" },
+                    { "4", null, "ProductionManager", "PRODUCTIONMANAGER" },
+                    { "5", null, "ChiefDesigner", "CHIEFDESIGNER" },
+                    { "6", null, "Designer", "DESIGNER" },
+                    { "7", null, "Technologist", "TECHNOLOGIST" },
+                    { "8", null, "Printer", "PRINTER" },
+                    { "9", null, "MasterCnc", "MASTERCNC" }
                 });
 
             migrationBuilder.CreateIndex(

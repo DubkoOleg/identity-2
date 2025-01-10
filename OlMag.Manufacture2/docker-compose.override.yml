@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  olmag.manufacture2:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8350
+    ports:
+       - 8350:8350

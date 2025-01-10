@@ -12,7 +12,7 @@ using OlMag.Manufacture2.Data;
 namespace OlMag.Manufacture2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250109081652_Initial")]
+    [Migration("20250110093926_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -49,6 +49,116 @@ namespace OlMag.Manufacture2.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Name = "UserAdministrator",
+                            NormalizedName = "USERADMINISTRATOR"
+                        },
+                        new
+                        {
+                            Id = "3",
+                            Name = "SalesManager",
+                            NormalizedName = "SALESMANAGER"
+                        },
+                        new
+                        {
+                            Id = "4",
+                            Name = "ProductionManager",
+                            NormalizedName = "PRODUCTIONMANAGER"
+                        },
+                        new
+                        {
+                            Id = "5",
+                            Name = "ChiefDesigner",
+                            NormalizedName = "CHIEFDESIGNER"
+                        },
+                        new
+                        {
+                            Id = "6",
+                            Name = "Designer",
+                            NormalizedName = "DESIGNER"
+                        },
+                        new
+                        {
+                            Id = "7",
+                            Name = "Technologist",
+                            NormalizedName = "TECHNOLOGIST"
+                        },
+                        new
+                        {
+                            Id = "8",
+                            Name = "Printer",
+                            NormalizedName = "PRINTER"
+                        },
+                        new
+                        {
+                            Id = "9",
+                            Name = "MasterCnc",
+                            NormalizedName = "MASTERCNC"
+                        },
+                        new
+                        {
+                            Id = "10",
+                            Name = "MasterOfMechanicalProcessing",
+                            NormalizedName = "MASTEROFMECHANICALPROCESSING"
+                        },
+                        new
+                        {
+                            Id = "11",
+                            Name = "MasterOfLaser",
+                            NormalizedName = "MASTEROFLASER"
+                        },
+                        new
+                        {
+                            Id = "12",
+                            Name = "TeamCnc",
+                            NormalizedName = "TEAMCNC"
+                        },
+                        new
+                        {
+                            Id = "13",
+                            Name = "TeamOfMechanicalProcessing",
+                            NormalizedName = "TEAMOFMECHANICALPROCESSING"
+                        },
+                        new
+                        {
+                            Id = "14",
+                            Name = "TeamOfLaser",
+                            NormalizedName = "TEAMOFLASER"
+                        },
+                        new
+                        {
+                            Id = "15",
+                            Name = "Supplier",
+                            NormalizedName = "SUPPLIER"
+                        },
+                        new
+                        {
+                            Id = "16",
+                            Name = "TeamAssembly",
+                            NormalizedName = "TEAMASSEMBLY"
+                        },
+                        new
+                        {
+                            Id = "17",
+                            Name = "ControlDepartment",
+                            NormalizedName = "CONTROLDEPARTMENT"
+                        },
+                        new
+                        {
+                            Id = "18",
+                            Name = "Packer",
+                            NormalizedName = "PACKER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
