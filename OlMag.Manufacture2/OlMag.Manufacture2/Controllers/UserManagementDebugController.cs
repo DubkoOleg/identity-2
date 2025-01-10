@@ -10,21 +10,12 @@ namespace OlMag.Manufacture2.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserManagementDebugController : ControllerBase
+public class UserManagementDebugController(
+    ILogger<UserManagementDebugController> logger,
+    UserManager<IdentityUser> userManager,
+    RoleManager<IdentityRole> roleManager)
+    : ControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly ILogger<UserManagementDebugController> _logger;
-
-    public UserManagementDebugController(ILogger<UserManagementDebugController> logger, 
-        UserManager<IdentityUser> userManager, 
-        RoleManager<IdentityRole> roleManager)
-    {
-        _logger = logger;
-        _userManager = userManager;
-        _roleManager = roleManager;
-    }
-
     [HttpGet("getData")]
     [Authorize]
     [Obsolete]
@@ -34,7 +25,7 @@ public class UserManagementDebugController : ControllerBase
         var userName = User.FindFirstValue(ClaimTypes.Name); // will give the user's userName
 
         // For ASP.NET Core <= 3.1
-        IdentityUser applicationUser = await _userManager.GetUserAsync(User);
+        IdentityUser applicationUser = await userManager.GetUserAsync(User);
         string userEmail = applicationUser?.Email; // will give the user's Email
 
         // For ASP.NET Core >= 5.0
@@ -47,14 +38,15 @@ public class UserManagementDebugController : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetCurrentUser()
     {
-        var user = await _userManager.GetUserAsync(User);
-        var roles = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+        logger.LogInformation("Get current user info");
+        var user = await userManager.GetUserAsync(User);
+        var roles = await userManager.GetRolesAsync(user).ConfigureAwait(false);
         var userInfo = new UserWithRolesResponse
         {
             Id = user.Id,
             Name = user.UserName,
             Email = user.Email,
-            Roles = roles.ToArray()
+            Roles = [.. roles]
         };
         return Ok(userInfo);
     }
@@ -65,9 +57,9 @@ public class UserManagementDebugController : ControllerBase
     {
         var roleName = request.RoleName;
         if (string.IsNullOrWhiteSpace(roleName)) return BadRequest("Role name is empty");
-        if (await _roleManager.RoleExistsAsync(roleName)) return Conflict("Role already created");
+        if (await roleManager.RoleExistsAsync(roleName)) return Conflict("Role already created");
 
-        await _roleManager.CreateAsync(new IdentityRole
+        await roleManager.CreateAsync(new IdentityRole
         {
             Name = roleName,
             NormalizedName = roleName.ToUpper()
@@ -83,11 +75,11 @@ public class UserManagementDebugController : ControllerBase
     {
         var roleName = request.RoleName;
         if (string.IsNullOrWhiteSpace(roleName)) return BadRequest("Role name is empty");
-        if (!await _roleManager.RoleExistsAsync(roleName)) return BadRequest($"Role {request.RoleName} not found");
-        var user = await _userManager.FindByEmailAsync(request.UserEmail);
+        if (!await roleManager.RoleExistsAsync(roleName)) return BadRequest($"Role {request.RoleName} not found");
+        var user = await userManager.FindByEmailAsync(request.UserEmail);
         if (user == null) return BadRequest($"User with email {request.UserEmail} not found");
 
-        await _userManager.AddToRoleAsync(user, roleName);
+        await userManager.AddToRoleAsync(user, roleName);
 
         return Ok("success");
     }
@@ -99,11 +91,11 @@ public class UserManagementDebugController : ControllerBase
     {
         var roleName = request.RoleName;
         if (string.IsNullOrWhiteSpace(roleName)) return BadRequest("Role name is empty");
-        if (!await _roleManager.RoleExistsAsync(roleName)) return BadRequest($"Role {request.RoleName} not found");
-        var user = await _userManager.FindByEmailAsync(request.UserEmail);
+        if (!await roleManager.RoleExistsAsync(roleName)) return BadRequest($"Role {request.RoleName} not found");
+        var user = await userManager.FindByEmailAsync(request.UserEmail);
         if (user == null) return BadRequest($"User with email {request.UserEmail} not found");
 
-        await _userManager.RemoveFromRoleAsync(user, roleName);
+        await userManager.RemoveFromRoleAsync(user, roleName);
 
         return Ok("success");
     }
@@ -111,9 +103,9 @@ public class UserManagementDebugController : ControllerBase
     [HttpGet("resetPassword/getResetToken")]
     public async Task<IActionResult> Reset(string userEmail)
     {
-        var user = await _userManager.FindByEmailAsync(userEmail);
+        var user = await userManager.FindByEmailAsync(userEmail);
         if (user == null) return BadRequest($"User with email {userEmail} not found");
-        var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var code = await userManager.GeneratePasswordResetTokenAsync(user);
         return Ok(code);
     }
 }
