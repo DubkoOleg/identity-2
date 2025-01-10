@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.OpenApi.Models;
 using OlMag.Manufacture2.Data;
 using Serilog;
@@ -47,7 +48,17 @@ try
 
     builder.Services.AddDbContext<DataContext>(options =>
     {
-        options.UseNpgsql(configuration.GetConnectionString("IdentityConnection"));
+        options.UseNpgsql(configuration.GetConnectionString("IdentityConnection"),
+            o => o.MigrationsHistoryTable(
+                tableName: HistoryRepository.DefaultTableName,
+                schema: "public"));
+    });
+    builder.Services.AddDbContext<SaleManagementContext>(options =>
+    {
+        options.UseNpgsql(configuration.GetConnectionString("IdentityConnection"),
+            o => o.MigrationsHistoryTable(
+                tableName: HistoryRepository.DefaultTableName, 
+                schema: "SaleManagement"));
     });
 
     builder.Services.AddAuthentication();
@@ -82,7 +93,7 @@ try
     app.Run();
     return 0;
 }
-catch (Exception ex)
+catch (Exception ex) when (ex is not HostAbortedException && ex.Source != "Microsoft.EntityFrameworkCore.Design")
 {
     Log.Fatal(ex, "An unhandled exception occurred during bootstrapping");
     return 1;
