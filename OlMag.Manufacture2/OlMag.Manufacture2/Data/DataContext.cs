@@ -1,28 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using OlMag.Manufacture2.Data.Configurations;
 
-namespace OlMag.Manufacture2.Data
+namespace OlMag.Manufacture2.Data;
+
+public class DataContext(DbContextOptions<DataContext> options) : IdentityDbContext(options)
 {
-    public class DataContext : IdentityDbContext
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options)
-        {
+        modelBuilder.ApplyConfiguration(new RoleConfiguration());
 
-        }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            var roles = Enum.GetValues<EnRole>().Select(role =>            
-                new IdentityRole
-                {
-                    Id = ((int)role).ToString(),
-                    Name = role.ToString(),
-                    NormalizedName = role.ToString().ToUpper(),
-                }
-            );
-            modelBuilder.Entity<IdentityRole>().HasData(roles);
-
-            base.OnModelCreating(modelBuilder);
-        }
+        base.OnModelCreating(modelBuilder);
     }
 }
