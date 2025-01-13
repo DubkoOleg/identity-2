@@ -3,9 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.OpenApi.Models;
 using OlMag.Manufacture2.Data;
-using OlMag.Manufacture2.Interfaces;
-using OlMag.Manufacture2.Services;
-using OlMag.Manufacture2.Services.SalesManagerRepositories;
+using OlMag.Manufacture2.Helpers;
 using Serilog;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
@@ -24,15 +22,10 @@ try
 
     // Add services to the container.
 
-
-    builder.Services.AddSerilog((services, lc) => lc
-        .ReadFrom.Configuration(builder.Configuration)
+    builder.Host.UseSerilog((context, services, configuration) => configuration
+        .ReadFrom.Configuration(context.Configuration)
         .ReadFrom.Services(services)
-        .Enrich.FromLogContext()
-        .WriteTo.Console(new ExpressionTemplate(
-            // Include trace and span ids when present.
-            "[{@t:HH:mm:ss} {@l:u3}{#if @tr is not null} ({substring(@tr,0,4)}:{substring(@sp,0,4)}){#end}] {@m}\n{@x}",
-            theme: TemplateTheme.Code)));
+        .Filter.ByExcluding(c => c.Properties.Any(p => p.Value.ToString().Contains("metrics"))));
 
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -76,8 +69,9 @@ try
         .AddRoleManager<RoleManager<IdentityRole>>()
         .AddDefaultTokenProviders();*/
 
-    builder.Services.AddTransient<ISalesManagerService, SalesManagerService>();
-    builder.Services.AddTransient<CustomerRepository>();
+    builder.Services.AddApiServices(builder.Configuration);
+
+    builder.Services.RegisterMapsterConfiguration();
 
     var app = builder.Build();
 

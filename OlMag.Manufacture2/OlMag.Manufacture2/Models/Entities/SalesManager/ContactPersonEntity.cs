@@ -4,22 +4,27 @@ using System.ComponentModel.DataAnnotations;
 namespace OlMag.Manufacture2.Models.Entities.SalesManager;
 
 /// <summary>
-/// Заказчик
+/// Контактное лицо
 /// </summary>
-public class CustomerEntity
+public class ContactPersonEntity
 {
     [Key] public Guid Id { get; set; }
 
     /// <summary>
-    /// Наименование организации
+    /// ФИО
     /// </summary>
     [Required]
     public string Name { get; set; } = default!;
 
     /// <summary>
-    /// Контактные лица
+    /// Заказчик
     /// </summary>
-    public List<ContactPersonEntity> ContactPersons { get; set; } = default!;
+    public Guid CustomerId { get; set; } = default!;
+
+    /// <summary>
+    /// Заказчик
+    /// </summary>
+    public CustomerEntity Customer { get; set; } = default!;
 
     /// <summary>
     /// Дата создания
@@ -34,12 +39,17 @@ public class CustomerEntity
 
     [Required]
     [Column(TypeName = "jsonb")]
-    public CustomerInformationEntity Information { get; set; } = default!;
+    public ContactPersonInformationEntity Information { get; set; } = default!;
 }
 
 [NotMapped]
-public class CustomerInformationEntity
+public class ContactPersonInformationEntity
 {
+    /// <summary>
+    /// Должность
+    /// </summary>
+    public string Post { get; set; } = string.Empty;
+
     /// <summary>
     /// Телефон
     /// </summary>

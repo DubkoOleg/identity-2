@@ -1,14 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OlMag.Manufacture2.Models.Requests.SalesManager;
+namespace OlMag.Manufacture2.Models.Responses.SalesManager;
 
-public class CustomerBodyRequest
+public class ContactPersonResponse
 {
     /// <summary>
-    /// Наименование организации
+    /// Идентификатор
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// ФИО
     /// </summary>
     [Required]
     public string Name { get; set; } = default!;
+
+    /// <summary>
+    /// Должность
+    /// </summary>
+    [Required]
+    public string Post { get; set; } = string.Empty;
 
     /// <summary>
     /// Телефон

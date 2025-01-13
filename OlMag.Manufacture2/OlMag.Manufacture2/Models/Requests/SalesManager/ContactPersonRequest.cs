@@ -2,7 +2,7 @@
 
 namespace OlMag.Manufacture2.Models.Requests.SalesManager;
 
-public class CustomerRequest : CustomerBodyRequest
+public class ContactPersonRequest: ContactPersonBodyRequest
 {
     /// <summary>
     /// Идентификатор

@@ -9,11 +9,18 @@ public class SalesManagementContext(DbContextOptions options) : DbContext(option
 {
     public const string Schema = "SalesManagement";
     public DbSet<CustomerEntity> Customers { get; set; } = default!;
+    public DbSet<ContactPersonEntity> ContactPersons { get; set; } = default!;
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(Schema);
         modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+        modelBuilder.ApplyConfiguration(new ContactPersonConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

@@ -2,24 +2,26 @@
 
 namespace OlMag.Manufacture2.Models.Requests.SalesManager;
 
-public class CustomerBodyRequest
+public class ContactPersonBodyRequest
 {
     /// <summary>
-    /// Наименование организации
+    /// ФИО
     /// </summary>
     [Required]
     public string Name { get; set; } = default!;
-
+    /// <summary>
+    /// Должность
+    /// </summary>
+    [Required]
+    public string Post { get; set; } = string.Empty;
     /// <summary>
     /// Телефон
     /// </summary>
     public string? Phone { get; set; }
-
     /// <summary>
     /// Почта
     /// </summary>
     public string? Email { get; set; }
-
     /// <summary>
     /// Примечание
     /// </summary>
