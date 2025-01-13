@@ -1,28 +1,29 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using OlMag.Manufacture2.Models.Entities.SaleManager;
 
 #nullable disable
 
-namespace OlMag.Manufacture2.Migrations.SaleManagement
+namespace OlMag.Manufacture2.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCustomers : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "SaleManagement");
+                name: "SalesManagement");
 
             migrationBuilder.CreateTable(
                 name: "Customers",
-                schema: "SaleManagement",
+                schema: "SalesManagement",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Information = table.Column<CustomerInformationEntity>(type: "jsonb", nullable: false)
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    DateArchived = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Information = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -35,7 +36,7 @@ namespace OlMag.Manufacture2.Migrations.SaleManagement
         {
             migrationBuilder.DropTable(
                 name: "Customers",
-                schema: "SaleManagement");
+                schema: "SalesManagement");
         }
     }
 }

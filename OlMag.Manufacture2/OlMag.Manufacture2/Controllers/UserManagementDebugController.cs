@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using OlMag.Manufacture2.Models.Responses;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using OlMag.Manufacture2.Models.Responses.Identity;
 
 namespace OlMag.Manufacture2.Controllers;
 #if DEBUG
@@ -49,6 +49,15 @@ public class UserManagementDebugController(
             Roles = [.. roles]
         };
         return Ok(userInfo);
+    }
+
+    [HttpGet("roles/all")]
+    [Authorize]
+    public async Task<IActionResult> AllRoles()
+    {
+        logger.LogInformation("Get all roles");
+        var roles = roleManager.Roles.Select(o => o.Name).OrderBy(o => o).ToList();
+        return Ok(roles);
     }
 
     [HttpPost("role/create")]

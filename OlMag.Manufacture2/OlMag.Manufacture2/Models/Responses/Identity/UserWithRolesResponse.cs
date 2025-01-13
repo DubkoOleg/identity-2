@@ -1,4 +1,4 @@
-﻿namespace OlMag.Manufacture2.Models.Responses;
+﻿namespace OlMag.Manufacture2.Models.Responses.Identity;
 
 public class UserWithRolesResponse
 {

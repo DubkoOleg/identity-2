@@ -8,7 +8,7 @@ using OlMag.Manufacture2.Data;
 
 #nullable disable
 
-namespace OlMag.Manufacture2.Migrations
+namespace OlMag.Manufacture2.Migrations.Data
 {
     [DbContext(typeof(DataContext))]
     partial class DataContextModelSnapshot : ModelSnapshot

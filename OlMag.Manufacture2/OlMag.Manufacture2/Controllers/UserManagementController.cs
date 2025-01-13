@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using OlMag.Manufacture2.Models.Requests;
-using OlMag.Manufacture2.Models.Responses;
+using OlMag.Manufacture2.Models.Requests.Identity;
+using OlMag.Manufacture2.Models.Responses.Identity;
 
 namespace OlMag.Manufacture2.Controllers;
 

@@ -9,10 +9,10 @@ using OlMag.Manufacture2.Data;
 
 #nullable disable
 
-namespace OlMag.Manufacture2.Migrations
+namespace OlMag.Manufacture2.Migrations.Data
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250110093926_Initial")]
+    [Migration("20250110163608_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

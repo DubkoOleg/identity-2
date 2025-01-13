@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.OpenApi.Models;
 using OlMag.Manufacture2.Data;
+using OlMag.Manufacture2.Interfaces;
+using OlMag.Manufacture2.Services;
+using OlMag.Manufacture2.Services.SalesManagerRepositories;
 using Serilog;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
@@ -53,12 +56,12 @@ try
                 tableName: HistoryRepository.DefaultTableName,
                 schema: "public"));
     });
-    builder.Services.AddDbContext<SaleManagementContext>(options =>
+    builder.Services.AddDbContext<SalesManagementContext>(options =>
     {
         options.UseNpgsql(configuration.GetConnectionString("IdentityConnection"),
             o => o.MigrationsHistoryTable(
                 tableName: HistoryRepository.DefaultTableName, 
-                schema: "SaleManagement"));
+                schema: SalesManagementContext.Schema));
     });
 
     builder.Services.AddAuthentication();
@@ -72,6 +75,9 @@ try
         .AddSignInManager()
         .AddRoleManager<RoleManager<IdentityRole>>()
         .AddDefaultTokenProviders();*/
+
+    builder.Services.AddTransient<ISalesManagerService, SalesManagerService>();
+    builder.Services.AddTransient<CustomerRepository>();
 
     var app = builder.Build();
 
