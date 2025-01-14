@@ -42,20 +42,7 @@ try
         options.OperationFilter<SecurityRequirementsOperationFilter>();
     });
 
-    builder.Services.AddDbContext<DataContext>(options =>
-    {
-        options.UseNpgsql(configuration.GetConnectionString("IdentityConnection"),
-            o => o.MigrationsHistoryTable(
-                tableName: HistoryRepository.DefaultTableName,
-                schema: "public"));
-    });
-    builder.Services.AddDbContext<SalesManagementContext>(options =>
-    {
-        options.UseNpgsql(configuration.GetConnectionString("IdentityConnection"),
-            o => o.MigrationsHistoryTable(
-                tableName: HistoryRepository.DefaultTableName, 
-                schema: SalesManagementContext.Schema));
-    });
+    builder.Services.AddDb(configuration.GetConnectionString("IdentityConnection")!);
 
     builder.Services.AddAuthentication();
 
@@ -90,6 +77,8 @@ try
     app.UseAuthorization();
 
     app.MapControllers();
+
+    app.UseDb();
     app.Run();
     return 0;
 }
@@ -103,3 +92,4 @@ finally
     Log.CloseAndFlush();
 }
 
+public partial class Program;

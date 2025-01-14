@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OlMag.Manufacture2", "OlMag
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{FB9E6ECA-F445-4839-A084-A28D7F383671}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OlMag.Manufacture2.Tests", "..\OlMag.Manufacture2.Tests\OlMag.Manufacture2.Tests.csproj", "{6E117562-81D9-450E-80FF-19DB9B091804}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FB9E6ECA-F445-4839-A084-A28D7F383671}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB9E6ECA-F445-4839-A084-A28D7F383671}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB9E6ECA-F445-4839-A084-A28D7F383671}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E117562-81D9-450E-80FF-19DB9B091804}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E117562-81D9-450E-80FF-19DB9B091804}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E117562-81D9-450E-80FF-19DB9B091804}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E117562-81D9-450E-80FF-19DB9B091804}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
