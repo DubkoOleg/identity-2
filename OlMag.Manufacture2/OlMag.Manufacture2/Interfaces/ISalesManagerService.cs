@@ -1,4 +1,5 @@
-﻿using OlMag.Manufacture2.Models.Requests.SalesManager;
+﻿using OlMag.Manufacture2.Helpers.OperationResult;
+using OlMag.Manufacture2.Models.Requests.SalesManager;
 using OlMag.Manufacture2.Models.Responses.SalesManager;
 
 namespace OlMag.Manufacture2.Interfaces;
@@ -7,15 +8,15 @@ public interface ISalesManagerService
 {
     bool HealthCheck();
 
-    Task<CustomerInfoResponse> GetCustomer(Guid customerId);
-    Task<CustomerResponse[]> GetCustomers();
-    Task<CustomerResponse> AddCustomer(CustomerBodyRequest request);
-    Task<CustomerResponse> UpdateCustomer(Guid customerId, CustomerBodyRequest request);
-    Task<bool> RemoveCustomer(Guid customerId);
+    Task<OperationResult<CustomerInfoResponse>> GetCustomer(Guid customerId);
+    Task<OperationResult<CustomerResponse[]>> GetCustomers();
+    Task<OperationResult<CustomerResponse>> AddCustomer(CustomerBodyRequest request);
+    Task<OperationResult<CustomerResponse>> UpdateCustomer(Guid customerId, CustomerBodyRequest request);
+    Task<OperationResult> RemoveCustomer(Guid customerId);
 
-    Task<ContactPersonInfoResponse> GetContactPerson(Guid contactPersonId);
-    Task<ContactPersonResponse[]> GetContactPersonsByCustomer(Guid customerId);
-    Task<ContactPersonResponse> AddContactPerson(ContactPersonBodyRequest request, Guid customerId);
-    Task<ContactPersonResponse> UpdateContactPerson(Guid contactPersonId, ContactPersonBodyRequest request);
-    Task<bool> RemoveContactPerson(Guid contactPersonId);
+    Task<OperationResult<ContactPersonInfoResponse>> GetContactPerson(Guid contactPersonId);
+    Task<OperationResult<ContactPersonResponse[]>> GetContactPersonsByCustomer(Guid customerId);
+    Task<OperationResult<ContactPersonResponse>> AddContactPerson(ContactPersonBodyRequest request, Guid customerId);
+    Task<OperationResult<ContactPersonResponse>> UpdateContactPerson(Guid contactPersonId, ContactPersonBodyRequest request);
+    Task<OperationResult> RemoveContactPerson(Guid contactPersonId);
 }

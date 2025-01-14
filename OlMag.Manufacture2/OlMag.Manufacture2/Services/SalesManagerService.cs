@@ -1,4 +1,7 @@
-﻿using OlMag.Manufacture2.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using OlMag.Manufacture2.Data;
+using OlMag.Manufacture2.Helpers.OperationResult;
+using OlMag.Manufacture2.Interfaces;
 using OlMag.Manufacture2.Models.Requests.SalesManager;
 using OlMag.Manufacture2.Models.Responses.SalesManager;
 using OlMag.Manufacture2.Services.SalesManagerRepositories;
@@ -6,6 +9,7 @@ using OlMag.Manufacture2.Services.SalesManagerRepositories;
 namespace OlMag.Manufacture2.Services;
 
 public class SalesManagerService(
+    SalesManagementContext dbContext,
     CustomerRepository customerRepository,
     ContactPersonRepository contactPersonRepository,
     ILogger<SalesManagerService> logger)
@@ -15,46 +19,70 @@ public class SalesManagerService(
 
     #region Customer
 
-    public Task<CustomerInfoResponse> GetCustomer(Guid customerId) => customerRepository.GetCustomer(customerId);
-    public Task<CustomerResponse[]> GetCustomers() => customerRepository.GetCustomers();
+    public Task<OperationResult<CustomerInfoResponse>> GetCustomer(Guid customerId) => customerRepository.GetCustomer(customerId);
+    public Task<OperationResult<CustomerResponse[]>> GetCustomers() => customerRepository.GetCustomers();
 
-    public Task<CustomerResponse> AddCustomer(CustomerBodyRequest request) => customerRepository.AddCustomer(request);
+    public Task<OperationResult<CustomerResponse>> AddCustomer(CustomerBodyRequest request) => customerRepository.AddCustomer(request);
 
-    public Task<CustomerResponse> UpdateCustomer(Guid customerId, CustomerBodyRequest request) =>
+    public Task<OperationResult<CustomerResponse>> UpdateCustomer(Guid customerId, CustomerBodyRequest request) =>
         customerRepository.UpdateCustomer(customerId, request);
 
-    public Task<bool> RemoveCustomer(Guid customerId)
+    public async Task<OperationResult> RemoveCustomer(Guid customerId)
     {
-        //todo если нет контактного лица
-        return customerRepository.RemoveCustomer(customerId);
-        //todo если есть контактные лица, но нет заказов
-        //Удалить контактные лица и заказчика
-        //todo если есть контактные лица и хоть один заказ
-        //Заархивировать контактные лица и заказчика
+        logger.LogInformation("Remove customer {customerId}", customerId);
+        await using var transaction = await dbContext.Database.BeginTransactionAsync();
+        try
+        {
+            //todo если есть контактные лица и хоть один заказ
+            //Заархивировать контактные лица и заказчика
+
+            await dbContext.ContactPersons.Where(c => c.CustomerId == customerId).ExecuteDeleteAsync();
+            await dbContext.Customers.Where(c => c.Id == customerId).ExecuteDeleteAsync();
+
+            await transaction.CommitAsync();
+            return OperationResultExtensions.Success();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error remove customer");
+            await transaction.RollbackAsync();
+            return OperationResultExtensions.Failed("Ошибка удаления заказчика");
+        }
     }
 
     #endregion Customer
 
     #region ContactPerson
 
-    public Task<ContactPersonInfoResponse> GetContactPerson(Guid contactPersonId) =>
+    public Task<OperationResult<ContactPersonInfoResponse>> GetContactPerson(Guid contactPersonId) =>
         contactPersonRepository.GetContactPerson(contactPersonId);
 
-    public Task<ContactPersonResponse[]> GetContactPersonsByCustomer(Guid customerId) =>
+    public Task<OperationResult<ContactPersonResponse[]>> GetContactPersonsByCustomer(Guid customerId) =>
         contactPersonRepository.GetContactPersonsByCustomer(customerId);
 
-    public Task<ContactPersonResponse> AddContactPerson(ContactPersonBodyRequest request, Guid customerId) =>
+    public Task<OperationResult<ContactPersonResponse>> AddContactPerson(ContactPersonBodyRequest request, Guid customerId) =>
         contactPersonRepository.AddContactPerson(request, customerId);
 
-    public Task<ContactPersonResponse> UpdateContactPerson(Guid contactPersonId, ContactPersonBodyRequest request) =>
+    public Task<OperationResult<ContactPersonResponse>> UpdateContactPerson(Guid contactPersonId, ContactPersonBodyRequest request) =>
         contactPersonRepository.UpdateContactPerson(contactPersonId, request);
 
-    public Task<bool> RemoveContactPerson(Guid contactPersonId)
+    public async Task<OperationResult> RemoveContactPerson(Guid contactPersonId)
     {
-        //todo если нет заказов
-        return contactPersonRepository.RemoveContactPerson(contactPersonId);
-        //todo если есть хоть один заказ
-        return contactPersonRepository.ArchivedContactPerson(contactPersonId);
+        logger.LogInformation("Remove contact person {contactPersonId}", contactPersonId);
+        try
+        {
+            //todo если есть контактные лица и хоть один заказ
+            //Заархивировать контактные лица и заказчика
+
+            await dbContext.ContactPersons.Where(c => c.Id == contactPersonId).ExecuteDeleteAsync();
+
+            return OperationResultExtensions.Success();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error remove contact person");
+            return OperationResultExtensions.Failed("Ошибка удаления контактного лица заказчика");
+        }
     }
 
     #endregion ContactPerson
