@@ -1,15 +1,13 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using FluentAssertions;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using OlMag.Manufacture2.Helpers.OperationResult;
-using Xunit.Abstractions;
 using OlMag.Manufacture2.Helpers;
+using OlMag.Manufacture2.Helpers.OperationResult;
+using OlMag.Manufacture2.Tests.TestData;
+using Xunit.Abstractions;
 
 namespace OlMag.Manufacture2.Tests.Maintenance;
 
@@ -19,13 +17,8 @@ public class TestBase(WebAppFixture fixture, ITestOutputHelper outputHelper) : I
     { AllowAutoRedirect = false, HandleCookies = false });
     protected readonly IMapper mapper = fixture.Application.Services.GetRequiredService<IMapper>();
 
-    public readonly JsonSerializerOptions JsonSerializerOptions = new()
-    {
-        Converters = { new JsonStringEnumConverter() },
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
 
-    /*protected async ValueTask Assert<T>(HttpResponseMessage response, TestResult info,
+    protected async ValueTask Assert<T>(HttpResponseMessage response, TestResult info,
         Func<OperationResult<T>, ValueTask>? assert = default, bool dumpContent = false,
         [CallerMemberName] string callerName = "",
         [CallerFilePath] string callerPath = "")
@@ -38,7 +31,7 @@ public class TestBase(WebAppFixture fixture, ITestOutputHelper outputHelper) : I
                 Path.GetFileNameWithoutExtension(callerPath), callerName);
             Directory.CreateDirectory(path);
 
-            var filePath = Path.Combine(path, $"test_{DateTime.Now:s}.resp");
+            var filePath = Path.Combine(path, $"test_{DateTime.Now:s}.resp".Replace(':','\''));
             outputHelper.WriteLine("Dump output: {0}", filePath);
 
             var content = await response.Content.ReadAsStringAsync();
@@ -69,7 +62,7 @@ public class TestBase(WebAppFixture fixture, ITestOutputHelper outputHelper) : I
         {
             response.IsSuccessStatusCode.Should().BeFalse();
         }
-    }*/
+    }
 
     protected static HttpContent CreateContent<T>(T value) =>
         JsonContent.Create(value, options: SerializerOptionsHelper.SerializerOptions);

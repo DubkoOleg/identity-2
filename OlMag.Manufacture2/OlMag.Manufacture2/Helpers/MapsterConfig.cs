@@ -6,19 +6,24 @@ using OlMag.Manufacture2.Models.Responses.SalesManager;
 
 namespace OlMag.Manufacture2.Helpers;
 
-internal static class MapsterConfig
+public static class MapsterConfig
 {
     public static IServiceCollection RegisterMapsterConfiguration(this IServiceCollection services)
+    {
+        var config = GetMapsterConfig();
+        services.AddSingleton(config);
+        services.AddScoped<IMapper, ServiceMapper>();
+        return services;
+    }
+
+    public static TypeAdapterConfig GetMapsterConfig()
     {
         var config = new TypeAdapterConfig();
         config.Compile();
 
         CustomerConfig(config);
         ContactPersonConfig(config);
-
-        services.AddSingleton(config);
-        services.AddScoped<IMapper, ServiceMapper>();
-        return services;
+        return config;
     }
 
     private static void CustomerConfig(TypeAdapterConfig config)

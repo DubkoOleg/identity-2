@@ -1,5 +1,6 @@
 using FluentAssertions;
 using OlMag.Manufacture2.Models.Entities.SalesManager;
+using OlMag.Manufacture2.Models.Responses.SalesManager;
 using OlMag.Manufacture2.Tests.Maintenance;
 using OlMag.Manufacture2.Tests.TestData;
 using Xunit.Abstractions;
@@ -13,11 +14,15 @@ public class SalesManagerControllerTests(WebAppFixture fixture, ITestOutputHelpe
 
     [Theory]
     [MemberData(nameof(SalesManagerData.CustomersForReadTest), MemberType = typeof(SalesManagerData))]
-    public async Task get_by_id_test(CustomerEntity customer)
+    public async Task Customer_GetCustomer_success_test(CustomerEntity customer)
     {
         var response = await client.GetAsync($"{Endpoint}/customer/{customer.Id}");
-        response.IsSuccessStatusCode.Should().BeTrue();
-        var content = await response.Content.ReadAsStringAsync();
-        content.Length.Should().BeGreaterThan(500);
+
+        await Assert<CustomerResponse>(response, TestResult.Successful, data =>
+        {
+            var response = mapper.Map<CustomerResponse>(customer);
+            data.Data.Should().BeEquivalentTo(response);
+            return ValueTask.CompletedTask;
+        }, true);
     }
 }

@@ -33,8 +33,4 @@
     <ProjectReference Include="..\OlMag.Manufacture2\OlMag.Manufacture2\OlMag.Manufacture2.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="TestData\" />
-  </ItemGroup>
-
 </Project>
