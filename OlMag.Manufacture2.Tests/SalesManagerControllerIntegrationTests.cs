@@ -37,7 +37,7 @@ public class SalesManagerControllerIntegrationTests(WebAppFixture appFixture, IT
         // todo Получить заказчика - успешно
         // todo Получить всех заказчиков - этого получить не должны
 
-        var dumpContent = true;
+        var dumpContent = false;
 
         var salesManagerToken = await UserManagementControllerTests.CreateUserAndGetToken(client, EnRole.SalesManager);
         SetAuthorization(salesManagerToken);
@@ -71,7 +71,7 @@ public class SalesManagerControllerIntegrationTests(WebAppFixture appFixture, IT
         // todo Получить одно контактное лицо - успешно
         // todo Получить все контактные лица одного заказчика - этого получить не должны
 
-        var dumpContent = true;
+        var dumpContent = false;
 
         var salesManagerToken = await UserManagementControllerTests.CreateUserAndGetToken(client, EnRole.SalesManager);
         SetAuthorization(salesManagerToken);

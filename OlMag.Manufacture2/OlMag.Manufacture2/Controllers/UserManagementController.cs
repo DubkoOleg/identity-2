@@ -59,21 +59,20 @@ public class UserManagementController(
         return Ok();
     }
 
-    [HttpDelete("users/{userId:guid}/deleteRole")]
-    public async Task<IActionResult> DeleteUserRole(Guid userId, RoleRequest request)
+    [HttpDelete("users/{userId:guid}/deleteRole/{roleName}")]
+    public async Task<IActionResult> DeleteUserRole(Guid userId, string roleName)
     {
-        logger.LogInformation("Delete user role {userId} {role}", userId, request.RoleName);
-        var roleName = request.RoleName;
+        logger.LogInformation("Delete user role {userId} {role}", userId, roleName);
         if (string.IsNullOrWhiteSpace(roleName))
         {
-            logger.LogError("Role name is empty {role}", request.RoleName);
+            logger.LogError("Role name is empty {role}", roleName);
             return BadRequest("Role name is empty");
         }
 
         if (!await roleManager.RoleExistsAsync(roleName).ConfigureAwait(false))
         {
-            logger.LogError("Role {role} not found", request.RoleName);
-            return BadRequest($"Role {request.RoleName} not found");
+            logger.LogError("Role {role} not found", roleName);
+            return BadRequest($"Role {roleName} not found");
         }
         var user = await userManager.FindByIdAsync(userId.ToString());
         if (user == null)
@@ -91,8 +90,9 @@ public class UserManagementController(
     public async Task<IActionResult> GetAllUsers()
     {
         logger.LogInformation("Get all users");
+        var identityUsers = await userManager.Users.ToListAsync();
         var users = (await Task.WhenAll(
-            userManager.Users.ToList().Select(GetUserInfo)).ConfigureAwait(false)).ToArray();
+            identityUsers.Select(GetUserInfo))).ToArray();
         logger.LogTrace("Get all users success: count {count}", users.Length);
         return Ok(users);
     }
@@ -109,7 +109,15 @@ public class UserManagementController(
         }
         var userInfo = await GetUserInfo(user);
         logger.LogTrace("Get user by email success");
-        return Ok(user);
+        return Ok(userInfo);
+    }
+
+    [HttpGet("roles/all")]
+    public async Task<IActionResult> AllRoles()
+    {
+        logger.LogInformation("Get all roles");
+        var roles = await roleManager.Roles.Select(o => o.Name).OrderBy(o => o).ToListAsync();
+        return Ok(roles);
     }
 
     private async Task<UserWithRolesResponse> GetUserInfo(IdentityUser user)
