@@ -6,7 +6,7 @@ namespace OlMag.Manufacture2.Models.Entities.SalesManager;
 /// <summary>
 /// Заказчик
 /// </summary>
-public class CustomerEntity
+internal class CustomerEntity
 {
     [Key] public Guid Id { get; set; }
 

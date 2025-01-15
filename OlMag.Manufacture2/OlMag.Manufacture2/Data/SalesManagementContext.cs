@@ -8,8 +8,8 @@ namespace OlMag.Manufacture2.Data;
 public class SalesManagementContext(DbContextOptions options) : DbContext(options)
 {
     public const string Schema = "SalesManagement";
-    public DbSet<CustomerEntity> Customers { get; set; } = default!;
-    public DbSet<ContactPersonEntity> ContactPersons { get; set; } = default!;
+    internal DbSet<CustomerEntity> Customers { get; set; } = default!;
+    internal DbSet<ContactPersonEntity> ContactPersons { get; set; } = default!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

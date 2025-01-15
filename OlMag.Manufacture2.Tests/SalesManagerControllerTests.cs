@@ -1,4 +1,4 @@
-using FluentAssertions;
+﻿using FluentAssertions;
 using OlMag.Manufacture2.Models.Entities.SalesManager;
 using OlMag.Manufacture2.Models.Responses.SalesManager;
 using OlMag.Manufacture2.Tests.Maintenance;
@@ -7,14 +7,14 @@ using Xunit.Abstractions;
 
 namespace OlMag.Manufacture2.Tests;
 
-public class SalesManagerControllerTests(WebAppFixture fixture, ITestOutputHelper outputHelper)
-    : TestBase(fixture, outputHelper)
+public class SalesManagerControllerTests(WebAppFixture appFixture, ITestOutputHelper outputHelper)
+    : TestBase(appFixture, outputHelper)
 {
     private const string Endpoint = "SalesManager";
 
     [Theory]
     [MemberData(nameof(SalesManagerData.CustomersForReadTest), MemberType = typeof(SalesManagerData))]
-    public async Task Customer_GetCustomer_success_test(CustomerEntity customer)
+    internal async Task Customer_GetCustomer_success_test(CustomerEntity customer)
     {
         var response = await client.GetAsync($"{Endpoint}/customer/{customer.Id}");
 

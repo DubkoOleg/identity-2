@@ -6,7 +6,7 @@ namespace OlMag.Manufacture2.Models.Entities.SalesManager;
 /// <summary>
 /// Контактное лицо
 /// </summary>
-public class ContactPersonEntity
+internal class ContactPersonEntity
 {
     [Key] public Guid Id { get; set; }
 

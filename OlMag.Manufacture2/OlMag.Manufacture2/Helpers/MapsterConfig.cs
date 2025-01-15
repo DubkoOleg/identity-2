@@ -38,6 +38,7 @@ public static class MapsterConfig
             .NewConfig<(Guid id, CustomerBodyRequest body), CustomerEntity>()
             .Map(dest => dest.Id, src => src.id)
             .Map(dest => dest, src => src.body)
+            .Map(dest => dest.Information, src => src.body)
             ;
 
         config.NewConfig<CustomerEntity, CustomerResponse>()
@@ -63,6 +64,7 @@ public static class MapsterConfig
             .NewConfig<(Guid id, ContactPersonBodyRequest body), ContactPersonEntity>()
             .Map(dest => dest.Id, src => src.id)
             .Map(dest => dest, src => src.body)
+            .Map(dest => dest.Information, src => src.body)
             ;
 
         config.NewConfig<ContactPersonEntity, ContactPersonResponse>()

@@ -7,7 +7,7 @@ public enum EnRole
     /// </summary>
     Admin = 1,
     /// <summary>
-    /// Aдминистратор пользователей
+    /// Администратор пользователей
     /// </summary>
     UserAdministrator = 2,
     /// <summary>

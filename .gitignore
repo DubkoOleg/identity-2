@@ -8,7 +8,7 @@ logs/
 dockerdata/
 
 # dumpContent
-SalesManagerControllerTests/
+*.resp
 
 # User-specific files
 *.rsuser

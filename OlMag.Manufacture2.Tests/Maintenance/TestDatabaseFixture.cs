@@ -24,23 +24,17 @@ public class TestDatabaseFixture
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
-                //DbInit(context);
+                IdentityData.InitDb(context);
             }
 
             using (var context = CreateSalesManagementContext(dbConnectionStringTesting))
             {
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
+                context.Database.Migrate();
 
-                DbInit(context);
+                SalesManagerData.InitDb(context);
             }
             _databaseInitialized = true;
         }
-    }
-
-    private void DbInit(SalesManagementContext context)
-    {
-        SalesManagerData.InitDb(context);
     }
 
     public static DataContext CreateDataContext(string connectionString)

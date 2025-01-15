@@ -4,7 +4,7 @@ using OlMag.Manufacture2.Models.Entities.SalesManager;
 
 namespace OlMag.Manufacture2.Data.Configurations.SalesManagement;
 
-public class ContactPersonConfiguration : IEntityTypeConfiguration<ContactPersonEntity>
+internal class ContactPersonConfiguration : IEntityTypeConfiguration<ContactPersonEntity>
 {
     public void Configure(EntityTypeBuilder<ContactPersonEntity> builder)
     {

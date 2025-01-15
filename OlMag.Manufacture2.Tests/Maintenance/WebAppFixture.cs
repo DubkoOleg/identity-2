@@ -22,17 +22,6 @@ public class WebAppFixture : IAsyncLifetime
             {
                 DatabaseFixture = new TestDatabaseFixture();
             });
-            builder.ConfigureTestServices(services =>
-            {
-                services
-                    .AddAuthentication(options =>
-                    {
-                        options.DefaultAuthenticateScheme = TestAuthHandler.AuthSchemeName;
-                        options.DefaultScheme = TestAuthHandler.AuthSchemeName;
-                    })
-                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(TestAuthHandler.AuthSchemeName,
-                        _ => { });
-            });
         });
         return Task.CompletedTask;
     }

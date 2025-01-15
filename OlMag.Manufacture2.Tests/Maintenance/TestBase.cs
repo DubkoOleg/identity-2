@@ -1,5 +1,7 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
+using AutoFixture;
 using FluentAssertions;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -11,17 +13,18 @@ using Xunit.Abstractions;
 
 namespace OlMag.Manufacture2.Tests.Maintenance;
 
-public class TestBase(WebAppFixture fixture, ITestOutputHelper outputHelper) : IClassFixture<WebAppFixture>
+public class TestBase(WebAppFixture appFixture, ITestOutputHelper outputHelper) : IClassFixture<WebAppFixture>
 {
-    protected readonly HttpClient client = fixture.Application.CreateClient(new WebApplicationFactoryClientOptions()
+    protected readonly HttpClient client = appFixture.Application.CreateClient(new WebApplicationFactoryClientOptions()
     { AllowAutoRedirect = false, HandleCookies = false });
-    protected readonly IMapper mapper = fixture.Application.Services.GetRequiredService<IMapper>();
+    protected readonly IMapper mapper = appFixture.Application.Services.GetRequiredService<IMapper>();
+    protected readonly Fixture fixture = new Fixture();
 
 
-    protected async ValueTask Assert<T>(HttpResponseMessage response, TestResult info,
+    protected async ValueTask<T?> Assert<T>(HttpResponseMessage response, TestResult info,
         Func<OperationResult<T>, ValueTask>? assert = default, bool dumpContent = false,
         [CallerMemberName] string callerName = "",
-        [CallerFilePath] string callerPath = "")
+        [CallerFilePath] string callerPath = "") where T: class
     {
         if (dumpContent)
         {
@@ -57,13 +60,20 @@ public class TestBase(WebAppFixture fixture, ITestOutputHelper outputHelper) : I
             data.Should<OperationResult<T>, T>().BeTrue();
 
             if (assert != null) await assert.Invoke(data!);
+            return data?.Data;
         }
         else
         {
             response.IsSuccessStatusCode.Should().BeFalse();
+            return null;
         }
     }
 
     protected static HttpContent CreateContent<T>(T value) =>
         JsonContent.Create(value, options: SerializerOptionsHelper.SerializerOptions);
+
+    protected void SetAuthorization(string token)
+    {
+        client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse($"Bearer {token}");
+    }
 }

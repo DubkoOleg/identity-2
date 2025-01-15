@@ -53,8 +53,10 @@ public static class ServiceCollectionExtensions
         try
         {
             using var scope = host.Services.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<SalesManagementContext>();
-            db.Database.Migrate();
+            var salesManagementContext = scope.ServiceProvider.GetRequiredService<SalesManagementContext>();
+            salesManagementContext.Database.Migrate();
+            /*var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+            dataContext.Database.Migrate();*/
         }
         catch (Exception ex)
         {

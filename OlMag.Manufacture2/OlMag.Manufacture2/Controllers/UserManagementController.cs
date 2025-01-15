@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OlMag.Manufacture2.Models.Requests.Identity;
 using OlMag.Manufacture2.Models.Responses.Identity;
 
@@ -94,6 +95,21 @@ public class UserManagementController(
             userManager.Users.ToList().Select(GetUserInfo)).ConfigureAwait(false)).ToArray();
         logger.LogTrace("Get all users success: count {count}", users.Length);
         return Ok(users);
+    }
+
+    [HttpGet("users/byEmail")]
+    public async Task<IActionResult> GetUserByEmail(string email)
+    {
+        logger.LogInformation("Get user by email");
+        var user = await userManager.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper());
+        if (user == null)
+        {
+            logger.LogWarning("User not found by {email}", email);
+            return BadRequest("Not found");
+        }
+        var userInfo = await GetUserInfo(user);
+        logger.LogTrace("Get user by email success");
+        return Ok(user);
     }
 
     private async Task<UserWithRolesResponse> GetUserInfo(IdentityUser user)

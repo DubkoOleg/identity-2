@@ -7,7 +7,7 @@ using OlMag.Manufacture2.Models.Requests.SalesManager;
 
 namespace OlMag.Manufacture2.Tests.TestData;
 
-public static class SalesManagerData
+internal static class SalesManagerData
 {
     static SalesManagerData()
     {
